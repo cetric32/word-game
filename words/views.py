@@ -95,3 +95,7 @@ def process_word(request,word):
         return JsonResponse({'msg':False})
 
 
+def home(request):
+    return render(request,'words/home.htm')
+
+

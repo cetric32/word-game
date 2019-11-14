@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Word Game | Test Your English Vocabulary!</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap/css/bootstrap.min.css' %}">
+    <script src="{% static 'js/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'fontawesome/css/all.css' %}"></script>
+    <script src="{% static 'css/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+</head>
+<body>
+    <div class="container text-capitalize">
+        <div class="row"> 
+            <div class="col-md-6 offset-md-3 text-center">
+                    <h1>word game</h1>
+                    <p>test your english vocabulary</p>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-md-4">
+                    <a href="#" class="btn btn-primary"  >start</a>
+            </div>
+            <div class="col-md-4 text-center">
+                    <a href="#" class="btn btn-primary">shuffle</a>
+            </div>
+            <div class="col-md-4 text-right">
+                    <a href="" class="btn btn-primary">stop</a>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-md-3">
+                <h2>used words</h2>
+            </div>
+            <div class="col-md-6">
+                <h2>letters</h2>
+            </div>
+            <div class="col-md-3">
+                <div class="row">
+                        <a href="#" class="btn btn-primary">word score</a>
+                </div>
+                <div class="row">
+                    <a href="#" class="btn btn-primary">total score</a>
+                </div>
+                
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <input type="text" name="word" class="form-control" placeholder="Enter An English word">
+            <button>submit</button>
+        </div>
+
+        <hr>
+    </div> 
+</body>
+</html>

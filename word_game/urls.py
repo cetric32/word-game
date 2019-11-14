@@ -16,7 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 
+import words.views as words_views
 urlpatterns = [
+    path('',words_views.home),
     path('admin/', admin.site.urls),
     path('words/',include('words.urls',namespace='words')),
 
