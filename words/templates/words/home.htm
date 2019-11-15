@@ -8,7 +8,7 @@
     <title>Word Game | Test Your English Vocabulary!</title>
     <link rel="stylesheet" href="{% static 'css/bootstrap/css/bootstrap.min.css' %}">
     <script src="{% static 'js/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'fontawesome/css/all.css' %}"></script>
+    <script src="{% static 'fontawesome/css/all.min.css' %}"></script>
     <script src="{% static 'css/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 </head>
 <body>
@@ -24,44 +24,161 @@
 
         <div class="row">
             <div class="col-md-4">
-                    <a href="#" class="btn btn-primary"  >start</a>
+                    <button title="Initialize a set of new letters for the game" class="btn btn-primary" onclick="get_letters()">re-start Game</button>
             </div>
             <div class="col-md-4 text-center">
-                    <a href="#" class="btn btn-primary">shuffle</a>
+                    <button title="shuffle the letters for easier viewing of new words" class="btn btn-primary" onclick="shuffle_letters()">shuffle letters</button>
             </div>
             <div class="col-md-4 text-right">
-                    <a href="" class="btn btn-primary">stop</a>
+                    <button class="btn btn-primary" onclick="end_game()">stop game</button>
             </div>
         </div>
 
         <hr>
 
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-3 border-right border-danger">
                 <h2>used words</h2>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 text-center">
                 <h2>letters</h2>
+                <div id="message"></div>
+                <div id="letters"></div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 border-left border-danger ml-0.5">
                 <div class="row">
-                        <a href="#" class="btn btn-primary">word score</a>
+                        <div>word score: <span id="score">0</span></div>
                 </div>
                 <div class="row">
-                    <a href="#" class="btn btn-primary">total score</a>
-                </div>
-                
+                    <div>total score: <span id="total"></span>0</div>
+                </div>   
             </div>
         </div>
 
         <hr>
 
         <div class="row">
-            <input type="text" name="word" class="form-control" placeholder="Enter An English word">
-            <button>submit</button>
+            <div class="col-md-6 offset-md-3">
+                    <form method="POST">
+                            <input type="text" name="word" id="word" class="form-control" placeholder="Enter An English word">
+                            <button type="button" class="btn btn-primary" id="word_btn" onclick="process_word()">submit</button>
+                    </form>
+            </div>
         </div>
 
         <hr>
+
     </div> 
+    <script>
+        let letters = [];
+        let letters_div = document.getElementById('letters');
+        let table = document.createElement('table');
+
+        table.classList.add('table','table-bordered','table-dark');
+
+    
+
+        function shuffleArray(array){
+            for(let i = array.length - 1; i > 0; i--){
+                let j = Math.floor(Math.random() * (i + 1));
+                let temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+        }
+
+        $('#word').keypress(function(e){
+            if(e.keyCode == 13 ){
+                $('#word_btn').click();
+            }
+
+        });
+
+        function shuffle_letters(){
+            shuffleArray(letters);
+            display_letters(letters);
+        }
+
+        function display_letters(letters){
+                $('#letters').html('');
+                $('#score').html(0);
+                $('total').html(0);
+                table.innerHTML = '';
+
+                let  tr1 = document.createElement('tr');
+                let  tr2 = document.createElement('tr');
+                let  tr3 = document.createElement('tr');
+
+                for (let i =0; i < 3; ++i){
+                    let td = document.createElement('td');
+                    td.innerHTML = letters[i];
+                    tr1.appendChild(td);  
+                }
+                table.appendChild(tr1);
+                for (let i =3; i < 6; ++i){
+                    let td = document.createElement('td');
+                    td.innerHTML = letters[i];
+                    tr2.appendChild(td);
+                    
+                }
+                table.appendChild(tr2);
+                for (let i =6; i < 9; ++i){
+                    let td = document.createElement('td');
+                    td.innerHTML = letters[i];
+                    tr3.appendChild(td);
+                    
+                }
+                table.appendChild(tr3);
+
+                letters_div.appendChild(table);    
+        }
+
+        function get_letters(){
+            $.getJSON('/words/letters/',function(response){
+                letters = response['letters'];
+                console.log(letters);
+                display_letters(letters);
+                
+
+            });
+        }
+
+        function process_word(){
+            $('#message').html('');
+            let word = $('#word').val();
+            word = word.toUpperCase();
+
+           data = JSON.stringify({word:word,letters:letters});
+
+           $.post('/words/word/validate/',data,function(response){
+               console.log(response);
+               if (response.msg != true){
+                   $('#message').html(word + ' is an incorrect word!').attr('class','text-danger');
+                   $('#score').html(0);
+               }
+               else{
+                   let url = '/words/word/process/' + word.toLowerCase();
+                   $.getJSON(url,function(response){
+                       console.log(response);
+                       if( response.msg == false){
+                            $('#message').html(word + ' is not an English word!').attr('class','text-warning');
+                            $('#score').html(0);
+                       }
+                       else{
+                            $('#message').html(word + ' is a correct English word!').attr('class','text-success');
+                            $('#score').html(response.data.scrabble_score);
+
+                       }
+                   });
+               }
+           });
+        
+
+
+        };
+
+        //run at on loading
+        get_letters();
+    </script>
 </body>
 </html>

@@ -83,8 +83,9 @@ def process_word(request,word):
             print()
             return JsonResponse({
                 'msg':True,
-                'data':{
-                    'scrabble_score':scrabble_score,
+                'data':
+                    {
+                        'scrabble_score':scrabble_score
                     }
             })
         elif resp.status == 404: #word not found
